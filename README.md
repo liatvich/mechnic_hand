@@ -1,1 +1,1 @@
-# mechnic_hand
+# mechnic hand
