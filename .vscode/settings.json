@@ -1,0 +1,12 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/Users/liatvi/Documents/Seminar/blender_autocomplete-master/2.8"
+    ],
+    "python.pythonPath": "/usr/local/bin/python",
+    "python.linting.pylintArgs": [
+        "--init-hook",
+        "import sys; sys.path.append('/usr/local/bin/python')"
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+}

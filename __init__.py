@@ -1,9 +1,9 @@
 bl_info = {
-    "name": "Build Skeleton",
+    "name": "Build Mechanic Hand",
     "author": "Liat V",
     "version": (1, 0),
     "blender": (2, 80, 0),
-    "description": "Build Skeleton",
+    "description": "Build Mechanic Hand",
     "location": "View3D",
     "category": "Object",
 }
@@ -14,10 +14,10 @@ from bpy.props import *
 from bpy.types import AddonPreferences
 import rna_keymap_ui
 from bpy.types import Panel
-from . build_skeleton_panel import Build_Skeleton_Panel
-from . build_skeleton_op import FC_Build_Skeleton_Operator
-from . clear_all_op import FC_Clear_All_Operator
-# from . mechanic_bone_panel import Mechanic_Bone_Panel
+from . mechanic_bones_op import MECHANIC_BONES_OT_actions
+from . mechanic_bones_panel import MECHANIC_BONES_UL_items
+from . mechanic_bones_panel import MECHANIC_BONES_PT_ObjectList
+from . mechanic_bones_objectCollection import MECHANIC_BONES_objectCollection
 
 # Scene properties
 #TODO: I think this should be moved elsewhere
@@ -40,10 +40,10 @@ class FC_AddonPreferences(AddonPreferences):
 addon_keymaps = []
 
 classes = (
-    FC_Clear_All_Operator,
-    FC_Build_Skeleton_Operator,
-    Build_Skeleton_Panel,
-    # Mechanic_Bone_Panel,
+    MECHANIC_BONES_OT_actions,
+    MECHANIC_BONES_UL_items,
+    MECHANIC_BONES_PT_ObjectList,
+    MECHANIC_BONES_objectCollection,
 )     
     
 def register():
@@ -54,7 +54,10 @@ def register():
     kc = bpy.context.window_manager.keyconfigs.addon
     kc.keymaps.new(name='3D View', space_type='VIEW_3D')
 
-    bpy.types.Object.expanded = bpy.props.BoolProperty(default=True)
+    # Custom scene properties
+    bpy.types.Scene.mechanic_bones = bpy.props.CollectionProperty(type=MECHANIC_BONES_objectCollection)
+    bpy.types.Scene.mechanic_bones_index = bpy.props.IntProperty()
+    bpy.types.Scene.mechanic_hand_armature = bpy.props.PointerProperty(type=bpy.types.Armature)
     
 def unregister():
     for c in classes:
@@ -64,8 +67,11 @@ def unregister():
     for km, kmi in addon_keymaps:
         km.keymap_items.remove(kmi)
 
-    del bpy.types.Object.expanded
     addon_keymaps.clear()
+
+    del bpy.types.Scene.mechanic_bones
+    del bpy.types.Scene.mechanic_bones_index
+    del bpy.types.Scene.mechanic_hand_armature
 
 #TODO: separate to logic folder
 #TODO: change name conventions
