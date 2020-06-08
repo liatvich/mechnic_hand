@@ -76,3 +76,17 @@ def unregister():
 #TODO: separate to logic folder
 #TODO: change name conventions
 #TODO: mesh deform?
+#TODO: separate to functions
+#TODO: watch the rest of blender videos
+#TODO: Understand how to build mesh from a CAD file
+#TODO: understand how to parent mesh to bones
+#TODO: understand how to rigify 
+#TODO: understand how to rigify the created hand shape
+#TODO: set the position of the end bone - with innverse kinematics get the angles (rotation of the other skeleton bones)
+#TODO: !! Create mechanic hand instread of with constraints with IK (elbow example)
+#---------------------------------
+#TODO: quick win - add clear all button
+#TODO: enable the remove bone operation
+#TODO: autocomplete doesn't load fast :(
+# bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1) - 
+#       operation that paint action in blender to see progress

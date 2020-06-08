@@ -7,8 +7,9 @@ class MECHANIC_BONES_UL_items(UIList):
         split = layout.split(factor=0.3)
         # split.label(item.name)
         split.prop(item, "name", emboss=False) # TODO: enable this - delete all logic dependent on name
-        split.prop(item, "length", text="length:", emboss=False) # TODO: think: change this to label?
-        split.prop(item, "angle", text="angle:", emboss=False) # TODO: think: change this to label?
+        split.prop(item, "length", text="length:", emboss=False)
+        split.prop(item, "angle_display", text="angle:", emboss=False)
+        split.prop(item, "axis", text="axis:", emboss=False)
 
     def invoke(self, context, event):
         pass
