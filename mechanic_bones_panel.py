@@ -38,6 +38,9 @@ class MECHANIC_BONES_PT_ObjectList(Panel):
         col = row.column(align=True)
         col.operator("mechanic_bones.list_action", icon='ADD', text="").action = 'ADD'
         col.operator("mechanic_bones.list_action", icon='REMOVE', text="").action = 'REMOVE'
+        row = layout.row()
+        col = row.column(align=True)
+        col.operator("mechanic_bones.import_stl", text="import stl")
 
         # row = layout.row()
         # col = row.column(align=True)
