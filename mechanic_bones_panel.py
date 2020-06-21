@@ -41,6 +41,9 @@ class MECHANIC_BONES_PT_ObjectList(Panel):
         row = layout.row()
         col = row.column(align=True)
         col.operator("mechanic_bones.import_stl", text="import stl")
+        row = layout.row()
+        col = row.column(align=True)
+        col.operator("object.clear_all", text="clear all")
 
         # row = layout.row()
         # col = row.column(align=True)

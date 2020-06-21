@@ -60,9 +60,7 @@ class Import_STL_Mechanic_Operator(Operator, ImportHelper):
     def createMesh(self, name, verts, edges, faces):
         me = bpy.data.meshes.new(name+'Mesh')     # Create mesh and object
         ob = bpy.data.objects.new(name, me)
-        ob.show_name = True
         bpy.context.collection.objects.link(ob)
-        # bpy.context.scene.objects.link(ob)     # Link object to scene
         me.from_pydata(verts, edges, faces)
         me.update(calc_edges=True)    # Update mesh with new data
         return ob
