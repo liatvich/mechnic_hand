@@ -17,7 +17,8 @@ from bpy.types import (
         Operator,
         OperatorFileListElement,
         )
-
+# from mathutils import Matrix
+# from stl import mesh
 
 class Import_STL_Mechanic_Operator(Operator, ImportHelper):
     """This appears in the tooltip of the operator and in the generated docs"""
@@ -57,21 +58,31 @@ class Import_STL_Mechanic_Operator(Operator, ImportHelper):
             default=False,
             )
 
-    def createMesh(self, name, verts, edges, faces):
-        me = bpy.data.meshes.new(name+'Mesh')     # Create mesh and object
-        ob = bpy.data.objects.new(name, me)
+    def createMesh(self, name, verts, edges, faces, context):
+        add_mesh = bpy.data.meshes.new(name)     # Create mesh and object
+        ob = bpy.data.objects.new(name, add_mesh)
         bpy.context.collection.objects.link(ob)
-        me.from_pydata(verts, edges, faces)
-        me.update(calc_edges=True)    # Update mesh with new data
+        add_mesh.from_pydata(verts, edges, faces)
+        add_mesh.update(calc_edges=True)    # Update mesh with new data
+        # add_mesh.transform(Matrix.Scale(0.1, 4, (1, 1, 1)))
         return ob
 
-    def load_stl(self, file, name):
+    def load_stl(self, file, name, context):
+        # change to blender unit to match the stl file  
+        # we can do that in a diffrent way 
+        # like set it from the addon
+        bpy.context.scene.unit_settings.length_unit = 'MILLIMETERS'
+        bpy.context.scene.unit_settings.scale_length = 0.001
+        bpy.context.space_data.clip_end = 10000
+        bpy.context.space_data.overlay.grid_scale = 0.001
+
         tris, tri_nors, pts = io_mesh_stl.stl_utils.read_stl(file)
-        self.createMesh(name, pts, [], tris)
+
+        self.createMesh(name, pts, [], tris, context)
 
     def execute(self, context):
         for file in self.files: 
             path = os.path.join(self.directory, file.name)
-            self.load_stl(path, file.name)
+            self.load_stl(path, file.name, context)
 
         return {'FINISHED'}

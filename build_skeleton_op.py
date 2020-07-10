@@ -7,7 +7,7 @@
 # class FC_Build_Skeleton_Operator(bpy.types.Operator):
 #     """Build Skeleton"""
 #     bl_idname = "armature.build_skeleton"
-#     bl_label = "Build Skeleton"
+#     bl_label = "Build Skeletocn"
 #     bl_description = "Build Skeleton"
 #     bl_space_type = "VIEW_3D"
 #     bl_region_type = "UI"

@@ -18,7 +18,6 @@ class MECHANIC_BONES_UL_items(UIList):
 # TODO: not sure Mechanic_Bone_Panel is the right convention - investigate that...
 # TODO: Separate those two? 
 # TODO: set the list to open wider
-# TODO: add clear all 
 class MECHANIC_BONES_PT_ObjectList(Panel):
     """TODO: add a meaningfull info"""
     bl_label = "Mechanic Hand Panel"
@@ -41,9 +40,13 @@ class MECHANIC_BONES_PT_ObjectList(Panel):
         row = layout.row()
         col = row.column(align=True)
         col.operator("mechanic_bones.import_stl", text="import stl")
+        # row = layout.row()
+        # col = row.column(align=True)
+        # col.operator("mechanic_bones.car_all", text="import ratio")
         row = layout.row()
         col = row.column(align=True)
-        col.operator("object.clear_all", text="clear all")
+        col.operator("mechanic_bones.clear_all", text="clear all")
+
 
         # row = layout.row()
         # col = row.column(align=True)
@@ -91,7 +94,7 @@ class MECHANIC_BONES_PT_ObjectList(Panel):
 #         # row.prop(context.scene, "bones_count", text="Number of bones")
 
 #         # row = layout.row()
-#         # row.operator("object.clear_all", text="clear")
+#         # row.operator("mechanic_bones.clear_all", text="clear")
 
 #         # row = layout.row()
 #         # row.operator("armature.build_skeleton", text="Generate")

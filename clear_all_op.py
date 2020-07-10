@@ -5,7 +5,7 @@ from bpy.props import *
 # Build skeleton operator
 class FC_Clear_All_Operator(bpy.types.Operator):
     """Build Skeleton"""
-    bl_idname = "object.clear_all"
+    bl_idname = "mechanic_bones.clear_all"
     bl_label = "Clear All"
     bl_description = "Clear all mesh and objects"
     bl_space_type = "VIEW_3D"
@@ -25,5 +25,7 @@ class FC_Clear_All_Operator(bpy.types.Operator):
 
         for armature in bpy.data.armatures:
             bpy.data.armatures.remove(armature)
+
+        context.scene.mechanic_bones.clear()
 
         return {'FINISHED'}
