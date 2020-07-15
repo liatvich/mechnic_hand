@@ -20,10 +20,10 @@ from bpy.types import (
 # from mathutils import Matrix
 # from stl import mesh
 
-class Import_STL_Mechanic_Operator(Operator, ImportHelper):
+class Import_device_STL_Mechanic_Operator(Operator, ImportHelper):
     """This appears in the tooltip of the operator and in the generated docs"""
-    bl_idname = "mechanic_bones.import_stl"
-    bl_label = "Import STL"
+    bl_idname = "mechanic_bones.import_device_stl"
+    bl_label = "Import Device STL"
 
     filename_ext = ".stl"
 
@@ -58,6 +58,9 @@ class Import_STL_Mechanic_Operator(Operator, ImportHelper):
             default=False,
             )
 
+    def __init__(self):
+        self.device_meshes_name = []
+
     def createMesh(self, name, verts, edges, faces, context):
         add_mesh = bpy.data.meshes.new(name)     # Create mesh and object
         ob = bpy.data.objects.new(name, add_mesh)
@@ -79,10 +82,39 @@ class Import_STL_Mechanic_Operator(Operator, ImportHelper):
         tris, tri_nors, pts = io_mesh_stl.stl_utils.read_stl(file)
 
         self.createMesh(name.split('.')[0], pts, [], tris, context)
+        self.device_meshes_name.append(name.split('.')[0])
+    
+    def select_activate(self, obj):
+        try:
+            bpy.ops.object.mode_set(mode="OBJECT")
+            bpy.ops.object.select_all(action='DESELECT')
+        except RuntimeError:
+            pass
+        obj.select_set(True)
+        bpy.context.view_layer.objects.active = obj
+
+    def join_device_meshses(self):
+        for mesh_name in self.device_meshes_name[1:]:
+            bpy.data.objects[mesh_name].select_set(True)
+
 
     def execute(self, context):
+        self.device_meshes_name = []
         for file in self.files: 
             path = os.path.join(self.directory, file.name)
             self.load_stl(path, file.name, context)
+
+        # joining into one device
+        if context.mode != 'OBJECT':
+            bpy.ops.object.mode_set(mode='OBJECT')
+
+        self.select_activate(bpy.data.objects[self.device_meshes_name[0]])
+        self.join_device_meshses()
+        bpy.ops.object.join()
+        
+        bpy.ops.object.select_all(action='DESELECT')
+        bpy.data.objects[self.device_meshes_name[0]].select_set(True)
+        bpy.context.view_layer.objects.active = bpy.data.objects[bpy.context.scene.mechanic_hand_armature.name]
+        bpy.ops.object.parent_set(type='ARMATURE_AUTO')
 
         return {'FINISHED'}

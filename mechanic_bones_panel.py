@@ -39,13 +39,16 @@ class MECHANIC_BONES_PT_ObjectList(Panel):
         col.operator("mechanic_bones.list_action", icon='REMOVE', text="").action = 'REMOVE'
         row = layout.row()
         col = row.column(align=True)
-        col.operator("mechanic_bones.import_stl", text="import stl")
-        # row = layout.row()
-        # col = row.column(align=True)
-        # col.operator("mechanic_bones.car_all", text="import ratio")
+        col.operator("mechanic_bones.clear_all", text="clear all")
         row = layout.row()
         col = row.column(align=True)
-        col.operator("mechanic_bones.clear_all", text="clear all")
+        col.operator("mechanic_bones.import_stl", text="import stl")
+        row = layout.row()
+        col = row.column(align=True)
+        col.operator("mechanic_bones.generate_bones", text="gernate bones")
+        row = layout.row()
+        col = row.column(align=True)
+        col.operator("mechanic_bones.import_device_stl", text="import device stl")
 
 
         # row = layout.row()

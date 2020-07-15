@@ -19,7 +19,9 @@ from . mechanic_bones_panel import MECHANIC_BONES_UL_items
 from . mechanic_bones_panel import MECHANIC_BONES_PT_ObjectList
 from . mechanic_bones_objectCollection import MECHANIC_BONES_objectCollection
 from . import_stl_op import Import_STL_Mechanic_Operator
+from . import_external_device_op import Import_device_STL_Mechanic_Operator
 from . clear_all_op import FC_Clear_All_Operator
+from . generate_bones_op import FC_Geneate_Bones_Operation
 
 # Scene properties
 #TODO: I think this should be moved elsewhere
@@ -47,7 +49,9 @@ classes = (
     MECHANIC_BONES_PT_ObjectList,
     MECHANIC_BONES_objectCollection,
     Import_STL_Mechanic_Operator,
+    Import_device_STL_Mechanic_Operator,
     FC_Clear_All_Operator,
+    FC_Geneate_Bones_Operation,
 )     
     
 def register():
