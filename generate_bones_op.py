@@ -38,69 +38,70 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
     def execute(self, context):
         bones_to_generate = {}
         for current_object in bpy.data.objects:
-            if('end' in current_object.name or 'start' in current_object.name):
-                bone_index = int(current_object.name.split('_')[0].split('Bone')[1])
+            if('DeviceBone' in current_object.name): 
+                bone_index = int(current_object.name.split('Bone')[1])
                 if(bone_index not in bones_to_generate):
                     bones_to_generate[bone_index] = {}
-                bones_to_generate[bone_index][current_object.name.split('_')[1]] = self.get_center(current_object)
+                bones_to_generate[bone_index] = self.get_center(current_object)
         
         ordered_bones_to_generate = collections.OrderedDict(sorted(bones_to_generate.items()))
 
         for bone_index in ordered_bones_to_generate:
-            # ordered_bones_to_generate[bone_index]['distance'] = self.get_distance(ordered_bones_to_generate[bone_index]['start'], ordered_bones_to_generate[bone_index]['end'])
-            # ordered_bones_to_generate[bone_index]['angle'] = self.get_angle(ordered_bones_to_generate[bone_index]['start'], ordered_bones_to_generate[bone_index]['end'])
+            # ordered_bones_to_generate[bone_index]['distance'] = self.get_distance(ordered_bones_to_generate[bone_index], ordered_bones_to_generate[bone_index])
+            # ordered_bones_to_generate[bone_index]['angle'] = self.get_angle(ordered_bones_to_generate[bone_index], ordered_bones_to_generate[bone_index])
 
+            if(bone_index + 1 in ordered_bones_to_generate):
+                bone_next_index = bone_index + 1
+                scene = context.scene
+                # Panel list UI
+                selected_bone = scene.mechanic_bones.add()
+                selected_bone.id = len(scene.mechanic_bones)
+                scene.mechanic_bones_index = (len(scene.mechanic_bones)-1)
 
-            scene = context.scene
-            # Panel list UI
-            selected_bone = scene.mechanic_bones.add()
-            selected_bone.id = len(scene.mechanic_bones)
-            scene.mechanic_bones_index = (len(scene.mechanic_bones)-1)
+                if scene.mechanic_bones_index == 0:
+                    # adding armature bone object - the armature that bones are added to
+                    if context.mode != 'OBJECT':
+                        bpy.ops.object.mode_set(mode='OBJECT')
+                    bpy.ops.object.armature_add(enter_editmode=True, location=(0,0,0))
+                    
+                    arm_index = bpy.data.armatures.__len__() - 1
+                    scene.mechanic_hand_armature = bpy.data.armatures[arm_index]
+                    selected_bone.name = bpy.data.armatures[arm_index].edit_bones[0].name
 
-            if scene.mechanic_bones_index == 0:
-                # adding armature bone object - the armature that bones are added to
-                if context.mode != 'OBJECT':
-                    bpy.ops.object.mode_set(mode='OBJECT')
-                bpy.ops.object.armature_add(enter_editmode=True, location=(0,0,0))
-                
-                arm_index = bpy.data.armatures.__len__() - 1
-                scene.mechanic_hand_armature = bpy.data.armatures[arm_index]
-                selected_bone.name = bpy.data.armatures[arm_index].edit_bones[0].name
+                    # setting the created bone as active
+                    bpy.ops.armature.select_all(action='DESELECT')
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active = bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index]
 
-                # setting the created bone as active
-                bpy.ops.armature.select_all(action='DESELECT')
-                bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active = bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index]
+                    # setting the bone length 
+                    if context.mode != 'EDIT':
+                        bpy.ops.object.mode_set(mode='EDIT')
 
-                # setting the bone length 
-                if context.mode != 'EDIT':
-                    bpy.ops.object.mode_set(mode='EDIT')
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.head = mathutils.Vector((ordered_bones_to_generate[bone_index][0],ordered_bones_to_generate[bone_index][1],ordered_bones_to_generate[bone_index][2]))
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.tail = mathutils.Vector((ordered_bones_to_generate[bone_next_index][0],ordered_bones_to_generate[bone_next_index][1],ordered_bones_to_generate[bone_next_index][2]))
 
-                bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.head = mathutils.Vector((ordered_bones_to_generate[bone_index]['start'][0],ordered_bones_to_generate[bone_index]['start'][1],ordered_bones_to_generate[bone_index]['start'][2]))
-                bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.tail = mathutils.Vector((ordered_bones_to_generate[bone_index]['end'][0],ordered_bones_to_generate[bone_index]['end'][1],ordered_bones_to_generate[bone_index]['end'][2]))
+                if scene.mechanic_bones_index > 0:
+                    if context.mode != 'EDIT':
+                        bpy.ops.object.mode_set(mode='EDIT')
+                    bpy.ops.armature.bone_primitive_add()
+                    selected_bone.name = bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index].name
+                    bpy.ops.armature.select_all(action='DESELECT')
 
-            if scene.mechanic_bones_index > 0:
-                if context.mode != 'EDIT':
-                    bpy.ops.object.mode_set(mode='EDIT')
-                bpy.ops.armature.bone_primitive_add()
-                selected_bone.name = bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index].name
-                bpy.ops.armature.select_all(action='DESELECT')
+                    # parenting to previous node
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index].select = True
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index - 1].select = True
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active = bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index - 1]
+                    bpy.ops.armature.parent_set(type='OFFSET')
 
-                # parenting to previous node
-                bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index].select = True
-                bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index - 1].select = True
-                bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active = bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index - 1]
-                bpy.ops.armature.parent_set(type='OFFSET')
+                    # setting the created bone as active
+                    bpy.ops.armature.select_all(action='DESELECT')
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active = bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index]
 
-                # setting the created bone as active
-                bpy.ops.armature.select_all(action='DESELECT')
-                bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active = bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index]
+                    # setting the bone length 
+                    if context.mode != 'EDIT':
+                        bpy.ops.object.mode_set(mode='EDIT')
 
-                # setting the bone length 
-                if context.mode != 'EDIT':
-                    bpy.ops.object.mode_set(mode='EDIT')
-
-                bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.head = mathutils.Vector((ordered_bones_to_generate[bone_index]['start'][0],ordered_bones_to_generate[bone_index]['start'][1],ordered_bones_to_generate[bone_index]['start'][2]))
-                bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.tail = mathutils.Vector((ordered_bones_to_generate[bone_index]['end'][0],ordered_bones_to_generate[bone_index]['end'][1],ordered_bones_to_generate[bone_index]['end'][2]))
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.head = mathutils.Vector((ordered_bones_to_generate[bone_index][0],ordered_bones_to_generate[bone_index][1],ordered_bones_to_generate[bone_index][2]))
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.tail = mathutils.Vector((ordered_bones_to_generate[bone_next_index][0],ordered_bones_to_generate[bone_next_index][1],ordered_bones_to_generate[bone_next_index][2]))
 
 
         return {'FINISHED'}
