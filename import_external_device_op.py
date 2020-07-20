@@ -60,6 +60,7 @@ class Import_device_STL_Mechanic_Operator(Operator, ImportHelper):
 
     def __init__(self):
         self.device_meshes_name = []
+        self.device_meshes = []
 
     def createMesh(self, name, verts, edges, faces, context):
         add_mesh = bpy.data.meshes.new(name)     # Create mesh and object
@@ -68,6 +69,11 @@ class Import_device_STL_Mechanic_Operator(Operator, ImportHelper):
         add_mesh.from_pydata(verts, edges, faces)
         add_mesh.update(calc_edges=True)    # Update mesh with new data
         # add_mesh.transform(Matrix.Scale(0.1, 4, (1, 1, 1)))
+        if name[0].isnumeric():
+            # if int(name[0]) not in self.device_meshes:
+            #     self.device_meshes[int(name[0])] = []
+            mesh_data = {'group_index': int(name[0]), 'vertices_count': add_mesh.vertices.__len__()}
+            self.device_meshes.append(mesh_data)
         return ob
 
     def load_stl(self, file, name, context):
@@ -93,13 +99,19 @@ class Import_device_STL_Mechanic_Operator(Operator, ImportHelper):
         obj.select_set(True)
         bpy.context.view_layer.objects.active = obj
 
-    def join_device_meshses(self):
+    def select_device_meshses(self):
         for mesh_name in self.device_meshes_name[1:]:
             bpy.data.objects[mesh_name].select_set(True)
 
+    def get_joined_mesh_index(self, vertice):
+        for mesh_vertice in bpy.data.meshes[0].vertices:
+            if mesh_vertice.co == vertice.co:
+                return mesh_vertice.index
+        return 0
 
     def execute(self, context):
         self.device_meshes_name = []
+        self.device_meshes = []
         for file in self.files: 
             path = os.path.join(self.directory, file.name)
             self.load_stl(path, file.name, context)
@@ -109,12 +121,33 @@ class Import_device_STL_Mechanic_Operator(Operator, ImportHelper):
             bpy.ops.object.mode_set(mode='OBJECT')
 
         self.select_activate(bpy.data.objects[self.device_meshes_name[0]])
-        self.join_device_meshses()
+        self.select_device_meshses()
         bpy.ops.object.join()
         
+        # Auto weights - ti generate vertex groups - here we create the automatic + vertex group
         bpy.ops.object.select_all(action='DESELECT')
         bpy.data.objects[self.device_meshes_name[0]].select_set(True)
         bpy.context.view_layer.objects.active = bpy.data.objects[bpy.context.scene.mechanic_hand_armature.name]
         bpy.ops.object.parent_set(type='ARMATURE_AUTO')
+
+        # now we will connect the bones to its correct (not automatic affected parts)
+        vertices_count_insert = 0
+        for group in bpy.data.objects[0].vertex_groups:
+            vertices_count_all = 0
+            for meshes_data in self.device_meshes:
+                # if meshes_data['mesh'].name == '1 Base':
+                #     continue
+                if int(group.name) == meshes_data['group_index']:
+                    for curr_vertice_index in range(meshes_data['vertices_count']):
+                        group.add([vertices_count_insert],1.0,'REPLACE')
+                        vertices_count_insert = vertices_count_insert + 1
+                        vertices_count_all = vertices_count_all + 1
+                else:
+                    for curr_vertice_index in range(meshes_data['vertices_count']):
+                        group.add([vertices_count_all],0.0,'REPLACE')
+                        vertices_count_all = vertices_count_all + 1
+        
+        bpy.context.object.data.show_axes = True
+        bpy.context.object.show_in_front = True
 
         return {'FINISHED'}

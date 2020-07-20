@@ -28,13 +28,6 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
         center = [ findCenter(axis) for axis in [x,y,z] ]
         return( center )
 
-    
-    # def get_distance(self, first_point, seconde_point):
-    #     return math.sqrt((first_point[0] - seconde_point[0]) ** 2 + (first_point[1] - seconde_point[1]) ** 2 + (first_point[2] - seconde_point[2]) ** 2)
-
-    # def get_angle(self, first_point, seconde_point):
-    #     return math.sqrt((first_point[0] - seconde_point[0]) ** 2 + (first_point[1] - seconde_point[1]) ** 2 + (first_point[2] - seconde_point[2]) ** 2)
-
     def execute(self, context):
         bones_to_generate = {}
         for current_object in bpy.data.objects:
@@ -47,9 +40,6 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
         ordered_bones_to_generate = collections.OrderedDict(sorted(bones_to_generate.items()))
 
         for bone_index in ordered_bones_to_generate:
-            # ordered_bones_to_generate[bone_index]['distance'] = self.get_distance(ordered_bones_to_generate[bone_index], ordered_bones_to_generate[bone_index])
-            # ordered_bones_to_generate[bone_index]['angle'] = self.get_angle(ordered_bones_to_generate[bone_index], ordered_bones_to_generate[bone_index])
-
             if(bone_index + 1 in ordered_bones_to_generate):
                 bone_next_index = bone_index + 1
                 scene = context.scene
@@ -78,6 +68,7 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
 
                     bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.head = mathutils.Vector((ordered_bones_to_generate[bone_index][0],ordered_bones_to_generate[bone_index][1],ordered_bones_to_generate[bone_index][2]))
                     bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.tail = mathutils.Vector((ordered_bones_to_generate[bone_next_index][0],ordered_bones_to_generate[bone_next_index][1],ordered_bones_to_generate[bone_next_index][2]))
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.name = str(bone_index)
 
                 if scene.mechanic_bones_index > 0:
                     if context.mode != 'EDIT':
@@ -102,6 +93,6 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
 
                     bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.head = mathutils.Vector((ordered_bones_to_generate[bone_index][0],ordered_bones_to_generate[bone_index][1],ordered_bones_to_generate[bone_index][2]))
                     bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.tail = mathutils.Vector((ordered_bones_to_generate[bone_next_index][0],ordered_bones_to_generate[bone_next_index][1],ordered_bones_to_generate[bone_next_index][2]))
-
+                    bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.name = str(bone_index)
 
         return {'FINISHED'}
