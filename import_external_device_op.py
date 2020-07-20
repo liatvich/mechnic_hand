@@ -74,6 +74,9 @@ class Import_device_STL_Mechanic_Operator(Operator, ImportHelper):
             #     self.device_meshes[int(name[0])] = []
             mesh_data = {'group_index': int(name[0]), 'vertices_count': add_mesh.vertices.__len__()}
             self.device_meshes.append(mesh_data)
+        else:
+            mesh_data = {'group_index': -1, 'vertices_count': add_mesh.vertices.__len__()}
+            self.device_meshes.append(mesh_data)
         return ob
 
     def load_stl(self, file, name, context):
