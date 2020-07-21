@@ -30,14 +30,20 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
 
     def execute(self, context):
         bones_to_generate = {}
+        bones_lock_rotation = {}
         for current_object in bpy.data.objects:
-            if('DeviceBone' in current_object.name): 
-                bone_index = int(current_object.name.split('Bone')[1])
+            if('DBone' in current_object.name):
+                bone_index = int(current_object.name.split('DBone')[1].split('_')[0])
+                lock_rotation = ''
+                if current_object.name.split('DBone')[1].split('_').__len__() > 1:
+                    lock_rotation = current_object.name.split('DBone')[1].split('_')[1]
                 if(bone_index not in bones_to_generate):
                     bones_to_generate[bone_index] = {}
                 bones_to_generate[bone_index] = self.get_center(current_object)
+                bones_lock_rotation[bone_index] = lock_rotation
         
         ordered_bones_to_generate = collections.OrderedDict(sorted(bones_to_generate.items()))
+        ordered_bones_lock_rotation = collections.OrderedDict(sorted(bones_lock_rotation.items()))
 
         for bone_index in ordered_bones_to_generate:
             if(bone_index + 1 in ordered_bones_to_generate):
@@ -94,5 +100,22 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
                     bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.head = mathutils.Vector((ordered_bones_to_generate[bone_index][0],ordered_bones_to_generate[bone_index][1],ordered_bones_to_generate[bone_index][2]))
                     bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.tail = mathutils.Vector((ordered_bones_to_generate[bone_next_index][0],ordered_bones_to_generate[bone_next_index][1],ordered_bones_to_generate[bone_next_index][2]))
                     bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones.active.name = str(bone_index)
+                
+                # setting bone lock rotation
+                if context.mode != 'POSE':
+                    bpy.ops.object.mode_set(mode='POSE')
+                
+                if 'X' in ordered_bones_lock_rotation[bone_index]:
+                    bpy.context.object.pose.bones[str(bone_index)].lock_rotation[0] = True
+                else: 
+                    bpy.context.object.pose.bones[str(bone_index)].constraints.new('LIMIT_ROTATION')
+                    bpy.context.object.pose.bones[str(bone_index)].constraints["Limit Rotation"].owner_space = 'LOCAL'
+                    bpy.context.object.pose.bones[str(bone_index)].constraints["Limit Rotation"].use_limit_x = True
+                    bpy.context.object.pose.bones[str(bone_index)].constraints["Limit Rotation"].min_x = -1.5708
+                    bpy.context.object.pose.bones[str(bone_index)].constraints["Limit Rotation"].max_x = 1.5708
+                if 'Y' in ordered_bones_lock_rotation[bone_index]:
+                    bpy.context.object.pose.bones[str(bone_index)].lock_rotation[1] = True
+                if 'Z' in ordered_bones_lock_rotation[bone_index]:
+                    bpy.context.object.pose.bones[str(bone_index)].lock_rotation[2] = True
 
         return {'FINISHED'}
