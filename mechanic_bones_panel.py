@@ -31,21 +31,21 @@ class MECHANIC_BONES_PT_ObjectList(Panel):
         scene = bpy.context.scene
 
         row = layout.row()
-        row.template_list("MECHANIC_BONES_UL_items", "custom_def_list", scene, "mechanic_bones", 
-            scene, "mechanic_bones_index")
+        # row.template_list("MECHANIC_BONES_UL_items", "custom_def_list", scene, "mechanic_bones", 
+        #     scene, "mechanic_bones_index")
 
-        col = row.column(align=True)
-        col.operator("mechanic_bones.list_action", icon='ADD', text="").action = 'ADD'
-        col.operator("mechanic_bones.list_action", icon='REMOVE', text="").action = 'REMOVE'
-        row = layout.row()
+        # col = row.column(align=True)
+        # col.operator("mechanic_bones.list_action", icon='ADD', text="").action = 'ADD'
+        # col.operator("mechanic_bones.list_action", icon='REMOVE', text="").action = 'REMOVE'
+        # row = layout.row()
         col = row.column(align=True)
         col.operator("mechanic_bones.clear_all", text="clear all")
         row = layout.row()
         col = row.column(align=True)
-        col.operator("mechanic_bones.import_stl", text="import stl")
+        col.operator("mechanic_bones.import_stl", text="import bones points stl")
         row = layout.row()
         col = row.column(align=True)
-        col.operator("mechanic_bones.generate_bones", text="gernate bones")
+        col.operator("mechanic_bones.generate_bones", text="generate bones")
         row = layout.row()
         col = row.column(align=True)
         col.operator("mechanic_bones.import_device_stl", text="import device stl")
