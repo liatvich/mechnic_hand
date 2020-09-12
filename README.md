@@ -1,6 +1,6 @@
  # mechanic hand
 
-One Paragraph of project description goes here
+We aim to build a generalized process that creates a working simulation from a robot model that is general, can be implemented on any robot, clear and easy to implement as possible
 
 ## Getting Started
 
