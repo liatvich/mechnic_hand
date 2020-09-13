@@ -62,7 +62,8 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
                     
                     arm_index = bpy.data.armatures.__len__() - 1
                     scene.mechanic_hand_armature = bpy.data.armatures[arm_index]
-                    selected_bone.name = bpy.data.armatures[arm_index].edit_bones[0].name
+                    # selected_bone.name = bpy.data.armatures[arm_index].edit_bones[0].name
+                    selected_bone.name = str(bone_index)
 
                     # setting the created bone as active
                     bpy.ops.armature.select_all(action='DESELECT')
@@ -80,7 +81,8 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
                     if context.mode != 'EDIT':
                         bpy.ops.object.mode_set(mode='EDIT')
                     bpy.ops.armature.bone_primitive_add()
-                    selected_bone.name = bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index].name
+                    # selected_bone.name = bpy.data.armatures[scene.mechanic_hand_armature.name].edit_bones[scene.mechanic_bones_index].name
+                    selected_bone.name = str(bone_index)
                     bpy.ops.armature.select_all(action='DESELECT')
 
                     # parenting to previous node
@@ -105,7 +107,12 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
                 if context.mode != 'POSE':
                     bpy.ops.object.mode_set(mode='POSE')
                 
+                selected_bone.x_limit = False
+                selected_bone.y_limit = False
+                selected_bone.z_limit = False
+
                 if 'X' in ordered_bones_lock_rotation[bone_index]:
+                    selected_bone.x_limit = True
                     bpy.context.object.pose.bones[str(bone_index)].lock_rotation[0] = True
                 else: 
                     bpy.context.object.pose.bones[str(bone_index)].constraints.new('LIMIT_ROTATION')
@@ -114,8 +121,10 @@ class FC_Geneate_Bones_Operation(bpy.types.Operator):
                     bpy.context.object.pose.bones[str(bone_index)].constraints["Limit Rotation"].min_x = -1.5708
                     bpy.context.object.pose.bones[str(bone_index)].constraints["Limit Rotation"].max_x = 1.5708
                 if 'Y' in ordered_bones_lock_rotation[bone_index]:
+                    selected_bone.y_limit = True
                     bpy.context.object.pose.bones[str(bone_index)].lock_rotation[1] = True
                 if 'Z' in ordered_bones_lock_rotation[bone_index]:
+                    selected_bone.z_limit = True
                     bpy.context.object.pose.bones[str(bone_index)].lock_rotation[2] = True
 
         return {'FINISHED'}

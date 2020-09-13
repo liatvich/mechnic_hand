@@ -7,7 +7,7 @@ class MECHANIC_BONES_UL_items(UIList):
         split = layout.split(factor=0.3)
         # split.label(item.name)
         split.prop(item, "name", emboss=False) # TODO: enable this - delete all logic dependent on name
-        split.prop(item, "length", text="length:", emboss=False)
+        # split.prop(item, "length", text="length:", emboss=False)
         split.prop(item, "angle_display", text="angle:", emboss=False)
         split.prop(item, "axis", text="axis:", emboss=False)
 
@@ -31,13 +31,13 @@ class MECHANIC_BONES_PT_ObjectList(Panel):
         scene = bpy.context.scene
 
         row = layout.row()
-        # row.template_list("MECHANIC_BONES_UL_items", "custom_def_list", scene, "mechanic_bones", 
-        #     scene, "mechanic_bones_index")
+        row.template_list("MECHANIC_BONES_UL_items", "custom_def_list", scene, "mechanic_bones", 
+            scene, "mechanic_bones_index")
 
         # col = row.column(align=True)
         # col.operator("mechanic_bones.list_action", icon='ADD', text="").action = 'ADD'
         # col.operator("mechanic_bones.list_action", icon='REMOVE', text="").action = 'REMOVE'
-        # row = layout.row()
+        row = layout.row()
         col = row.column(align=True)
         col.operator("mechanic_bones.clear_all", text="clear all")
         row = layout.row()
