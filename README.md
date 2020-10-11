@@ -2,77 +2,29 @@
 
 We aim to build a generalized process that creates a working simulation from a robot model that is general, can be implemented on any robot, clear and easy to implement as possible
 
-## Getting Started
+# Simulation steps
+Let’s go over each step,
+1) After the Mechanical Engineer finishes designing a robotic model in any chosen software, he saves a robot model a .CAD file. 
+2) Fusion 360 integration step - our workflow contains additional model processing, we choose to do those processes in ‘Fusion 360’ since it is light and easy to use.
+  a. Produce a folder with all the model parts saved as .stl file. Each part file name should indicate the link this file is a part of. 
+File name convention is - {link number} {part name}.stl  
+Example - 
+1 part_name.stl
+2 part_name.stl
+3 part_name.stl
+… 
+number indicates which parts are grouped together and controlled by the same armature
+multiple parts can be put in the same group if needed
+  b. Produce spherical markers at approximate joint locations. 
+File name convention is - DBone{link name}_{transformation constraint axis}.stl  
+Example - 
+DBone1_XYZ.stl
+DBone2_XZ.stl
+DBone3_YZ.stl
+… 
+each object marks the start and end locations for armature bones
+the combination of X, Y, or Z notes which axis of motion are restricted for the joint
+DBone stands for - Device Bone
+Blender Add-on: 
+The panel purpose is to guide the user each step to the end simulation.
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-MAC
-this project create with vs code. 
-Build bpy - 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
-
-
-## Usage
-
-```python
-import foobar
-
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
-```
-
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## How to add addon to your local blender
-
-
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
