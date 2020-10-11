@@ -31,7 +31,7 @@ Blender Add-on:
 The panel purpose is to guide the user each step to the end simulation.
 
 3)Panel Key
- “clear all” removes any meshes
+“clear all” removes any meshes
 “import bones points stl” imports markers
 “generate bones” creates bones starting and ending at the bone markers, constraints bone motion based on the file names. After this phase the mechanical robotic infrastructure is created. 
 The list of the created bones are added to the group panel above the buttons. 
