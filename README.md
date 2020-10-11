@@ -4,7 +4,9 @@ We aim to build a generalized process that creates a working simulation from a r
 
 # Simulation steps
 Let’s go over each step,
+
 1) After the Mechanical Engineer finishes designing a robotic model in any chosen software, he saves a robot model a .CAD file. 
+
 2) Fusion 360 integration step - our workflow contains additional model processing, we choose to do those processes in ‘Fusion 360’ since it is light and easy to use.
   a. Produce a folder with all the model parts saved as .stl file. Each part file name should indicate the link this file is a part of. 
 File name convention is - {link number} {part name}.stl  
