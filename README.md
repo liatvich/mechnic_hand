@@ -27,6 +27,7 @@ the combination of X, Y, or Z notes which axis of motion are restricted for the 
 DBone stands for - Device Bone
 Blender Add-on: 
 The panel purpose is to guide the user each step to the end simulation.
+
 3)Panel Key
  “clear all” removes any meshes
 “import bones points stl” imports markers
